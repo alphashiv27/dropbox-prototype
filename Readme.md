@@ -198,7 +198,7 @@ fullstack-dropbox/
 
 1. **Click on a file** in the list.  
 2. If it’s a text/JSON file, contents will be displayed.  
-3. For images, an inline preview is shown.  
+3. For images, an inline preview is shown with a download button below the file.  
 4. All other file types provide a download link.
 
 ---

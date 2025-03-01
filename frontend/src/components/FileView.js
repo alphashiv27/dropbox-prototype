@@ -12,6 +12,7 @@ function FileView() {
       .then(data => {
         const file = data.find(item => item.id === id);
         setFileMeta(file);
+
         if (file && (file.content_type.includes('text') || file.content_type.includes('json'))) {
           fetch(`http://localhost:8000/download/${id}`)
             .then(res => res.text())
@@ -22,21 +23,36 @@ function FileView() {
       .catch(error => console.error('Error fetching file metadata:', error));
   }, [id]);
 
-  if (!fileMeta) return <div>Loading...</div>;
+  if (!fileMeta) {
+    return <div>Loading...</div>;
+  }
+
+  const downloadUrl = `http://localhost:8000/download/${id}`;
 
   return (
     <div>
       <h2>{fileMeta.original_filename}</h2>
+
+      {/* If the file is an image, display it and add a download button */}
       {fileMeta.content_type.includes('image') ? (
-        <img
-          src={`http://localhost:8000/download/${id}`}
-          alt={fileMeta.original_filename}
-          style={{ maxWidth: '100%' }}
-        />
+        <div>
+          <img
+            src={downloadUrl}
+            alt={fileMeta.original_filename}
+            style={{ maxWidth: '100%', marginBottom: '1rem' }}
+          />
+          <div>
+            <a href={downloadUrl} download>
+              <button>Download Image</button>
+            </a>
+          </div>
+        </div>
       ) : fileMeta.content_type.includes('text') || fileMeta.content_type.includes('json') ? (
+        /* For text/JSON files, show the file content */
         <pre style={{ background: '#f0f0f0', padding: '1rem' }}>{fileContent}</pre>
       ) : (
-        <a href={`http://localhost:8000/download/${id}`} download>
+        /* For other file types, show a download link */
+        <a href={downloadUrl} download>
           Download File
         </a>
       )}
